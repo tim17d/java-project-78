@@ -29,6 +29,7 @@ public class StringSchemaTest {
     @Test
     public void testMinLengthIsValid() {
         stringSchema.minLength(4);
+        assertThat(stringSchema.isValid(null)).isFalse();
         assertThat(stringSchema.isValid("str")).isFalse();
         assertThat(stringSchema.isValid("string")).isTrue();
     }
@@ -36,6 +37,7 @@ public class StringSchemaTest {
     @Test
     public void testContainsIsValid() {
         stringSchema.contains("st");
+        assertThat(stringSchema.isValid(null)).isFalse();
         assertThat(stringSchema.isValid("int")).isFalse();
         assertThat(stringSchema.isValid("string")).isTrue();
     }
@@ -45,11 +47,5 @@ public class StringSchemaTest {
         stringSchema.required().minLength(4).contains("st");
         assertThat(stringSchema.isValid("string")).isTrue();
         assertThat(stringSchema.isValid("st")).isFalse();
-    }
-
-    @Test
-    public void testNoRequiredValidationIsValidIfNull() {
-        stringSchema.minLength(4).contains("st");
-        assertThat(stringSchema.isValid(null)).isFalse();
     }
 }

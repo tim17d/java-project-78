@@ -1,7 +1,6 @@
 package hexlet.code;
 
-public class StringSchema {
-    private boolean isRequired = false;
+public class StringSchema extends BaseSchema {
     private Integer minLength;
     private String substring;
 
@@ -20,7 +19,9 @@ public class StringSchema {
         return this;
     }
 
-    public boolean isValid(String str) {
+    @Override
+    public boolean isValid(Object strObj) {
+        var str = (String) strObj;
         try {
             if (this.isRequired) {
                 if (str.isEmpty()) {
