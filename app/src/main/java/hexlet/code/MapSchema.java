@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class MapSchema extends BaseSchema {
     private Integer exactSize;
+    private Map<String, BaseSchema> appliedSchemas;
 
     @Override
     public MapSchema required() {
@@ -13,6 +14,11 @@ public class MapSchema extends BaseSchema {
 
     public MapSchema sizeOf(int size) {
         this.exactSize = size;
+        return this;
+    }
+
+    public MapSchema shape(Map<String, BaseSchema> schemas) {
+        this.appliedSchemas = schemas;
         return this;
     }
 
@@ -29,6 +35,10 @@ public class MapSchema extends BaseSchema {
                 if (value.size() != this.exactSize) {
                     return false;
                 }
+            }
+            if (this.appliedSchemas != null) {
+                return this.appliedSchemas.entrySet().stream()
+                        .allMatch(e -> e.getValue().isValid(value.get(e.getKey())));
             }
             return true;
         } catch (NullPointerException e) {
