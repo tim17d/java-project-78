@@ -5,6 +5,7 @@ public class NumberSchema extends BaseSchema {
     private Integer minValue;
     private Integer maxValue;
 
+    @Override
     public NumberSchema required() {
         this.isRequired = true;
         return this;
@@ -23,8 +24,8 @@ public class NumberSchema extends BaseSchema {
 
     @Override
     public boolean isValid(Object intObj) {
-        var value = (Integer) intObj;
         try {
+            var value = (Integer) intObj;
             if (this.isRequired) {
                 if (value == null) {
                     return false;

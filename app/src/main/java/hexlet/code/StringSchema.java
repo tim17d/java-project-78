@@ -4,6 +4,7 @@ public class StringSchema extends BaseSchema {
     private Integer minLength;
     private String substring;
 
+    @Override
     public StringSchema required() {
         this.isRequired = true;
         return this;
@@ -21,8 +22,8 @@ public class StringSchema extends BaseSchema {
 
     @Override
     public boolean isValid(Object strObj) {
-        var str = (String) strObj;
         try {
+            var str = (String) strObj;
             if (this.isRequired) {
                 if (str.isEmpty()) {
                     return false;
