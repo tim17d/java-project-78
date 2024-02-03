@@ -1,6 +1,6 @@
-package hexlet.code;
+package hexlet.code.schemas;
 
-public class StringSchema extends BaseSchema {
+public class StringSchema extends BaseSchema<String> {
     private Integer minLength;
     private String substring;
 
@@ -21,13 +21,7 @@ public class StringSchema extends BaseSchema {
     }
 
     @Override
-    public boolean isValid(Object strObj) {
-        String str;
-        try {
-            str = (String) strObj;
-        } catch (ClassCastException e) {
-            return false;
-        }
+    public boolean isValid(String str) {
         return this.requiredCheck(str) && this.minLengthCheck(str) && this.containsCheck(str);
     }
 

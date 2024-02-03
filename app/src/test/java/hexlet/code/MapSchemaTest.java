@@ -1,5 +1,7 @@
 package hexlet.code;
 
+import hexlet.code.schemas.BaseSchema;
+import hexlet.code.schemas.MapSchema;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,7 @@ public class MapSchemaTest {
 
     @Test
     public void testSizeOfIsValid() {
-        mapSchema.sizeOf(2);
+        mapSchema.sizeof(2);
         assertThat(mapSchema.isValid(null)).isFalse();
         assertThat(mapSchema.isValid(Map.of())).isFalse();
         assertThat(mapSchema.isValid(Map.of("key", "value"))).isFalse();
@@ -47,7 +49,7 @@ public class MapSchemaTest {
 
     @Test
     public void testFullValidationIsValid() {
-        mapSchema.required().sizeOf(2);
+        mapSchema.required().sizeof(2);
         assertThat(mapSchema.isValid(Map.of(
                 "key1", "value1",
                 "key2", "value2"
@@ -56,13 +58,13 @@ public class MapSchemaTest {
 
     @Test
     public void testShapeIsValid() {
-        var schemas = new HashMap<String, BaseSchema>();
+        var schemas = new HashMap<String, BaseSchema<?>>();
         var v = new Validator();
         schemas.put("firstName", v.string().required());
         schemas.put("lastName", v.string().required().minLength(3));
         schemas.put("age", v.number().required().range(0, 100));
 
-        mapSchema.required().sizeOf(3).shape(schemas);
+        mapSchema.required().sizeof(3).shape(schemas);
 
         var human1 = new HashMap<>();
         human1.put("firstName", "John");

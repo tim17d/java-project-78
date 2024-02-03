@@ -1,10 +1,10 @@
-package hexlet.code;
+package hexlet.code.schemas;
 
 import java.util.Map;
 
-public class MapSchema extends BaseSchema {
+public class MapSchema extends BaseSchema<Map<?, ?>> {
     private Integer exactSize;
-    private Map<String, BaseSchema> appliedSchemas;
+    private Map<String, BaseSchema<?>> appliedSchemas;
 
     @Override
     public MapSchema required() {
@@ -12,25 +12,19 @@ public class MapSchema extends BaseSchema {
         return this;
     }
 
-    public MapSchema sizeOf(int size) {
+    public MapSchema sizeof(int size) {
         this.exactSize = size;
         return this;
     }
 
-    public MapSchema shape(Map<String, BaseSchema> schemas) {
+    public MapSchema shape(Map<String, BaseSchema<?>> schemas) {
         this.appliedSchemas = schemas;
         return this;
     }
 
     @Override
-    public boolean isValid(Object mapObj) {
-        Map<?, ?> map;
-        try {
-            map = (Map<?, ?>) mapObj;
-        } catch (ClassCastException e) {
-            return false;
-        }
-        return requiredCheck(map) && sizeOfCheck(map) && shapeCheck(map);
+    public boolean isValid(Map<?, ?> map) {
+        return requiredCheck(map) && sizeofCheck(map) && shapeCheck(map);
     }
 
     private boolean requiredCheck(Map<?, ?> map) {
@@ -40,17 +34,17 @@ public class MapSchema extends BaseSchema {
         return true;
     }
 
-    private boolean sizeOfCheck(Map<?, ?> map) {
+    private boolean sizeofCheck(Map<?, ?> map) {
         if (this.exactSize != null) {
             return map != null && map.size() == this.exactSize;
         }
         return true;
     }
 
-    private boolean shapeCheck(Map<?, ?> map) {
+    private <T> boolean shapeCheck(Map<?, T> map) {
         if (this.appliedSchemas != null) {
             return map != null && this.appliedSchemas.entrySet().stream()
-                    .allMatch(e -> e.getValue().isValid(map.get(e.getKey())));
+                    .allMatch(e -> ((BaseSchema<T>) e.getValue()).isValid(map.get(e.getKey())));
         }
         return true;
     }

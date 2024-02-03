@@ -1,6 +1,6 @@
-package hexlet.code;
+package hexlet.code.schemas;
 
-public class NumberSchema extends BaseSchema {
+public class NumberSchema extends BaseSchema<Integer> {
     private boolean isPositive = false;
     private Integer minValue;
     private Integer maxValue;
@@ -23,13 +23,7 @@ public class NumberSchema extends BaseSchema {
     }
 
     @Override
-    public boolean isValid(Object intObj) {
-        Integer value;
-        try {
-            value = (Integer) intObj;
-        } catch (ClassCastException e) {
-            return false;
-        }
+    public boolean isValid(Integer value) {
         return this.requiredCheck(value) && this.positiveCheck(value) && this.rangeCheck(value);
     }
 
