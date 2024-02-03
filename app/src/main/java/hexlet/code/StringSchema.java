@@ -22,26 +22,33 @@ public class StringSchema extends BaseSchema {
 
     @Override
     public boolean isValid(Object strObj) {
+        String str;
         try {
-            var str = (String) strObj;
-            if (this.isRequired) {
-                if (str.isEmpty()) {
-                    return false;
-                }
-            }
-            if (this.minLength != null) {
-                if (str.length() < this.minLength) {
-                    return false;
-                }
-            }
-            if (this.substring != null) {
-                if (!str.contains(this.substring)) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (NullPointerException e) {
+            str = (String) strObj;
+        } catch (ClassCastException e) {
             return false;
         }
+        return this.requiredCheck(str) && this.minLengthCheck(str) && this.containsCheck(str);
+    }
+
+    private boolean requiredCheck(String s) {
+        if (this.isRequired) {
+            return s != null && !s.isEmpty();
+        }
+        return true;
+    }
+
+    private boolean minLengthCheck(String s) {
+        if (this.minLength != null) {
+            return s != null && s.length() >= this.minLength;
+        }
+        return true;
+    }
+
+    private boolean containsCheck(String s) {
+        if (this.substring != null) {
+            return s != null && s.contains(this.substring);
+        }
+        return true;
     }
 }

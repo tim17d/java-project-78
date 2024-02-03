@@ -24,25 +24,34 @@ public class MapSchema extends BaseSchema {
 
     @Override
     public boolean isValid(Object mapObj) {
+        Map<?, ?> map;
         try {
-            var value = (Map<Object, Object>) mapObj;
-            if (this.isRequired) {
-                if (value == null) {
-                    return false;
-                }
-            }
-            if (this.exactSize != null) {
-                if (value.size() != this.exactSize) {
-                    return false;
-                }
-            }
-            if (this.appliedSchemas != null) {
-                return this.appliedSchemas.entrySet().stream()
-                        .allMatch(e -> e.getValue().isValid(value.get(e.getKey())));
-            }
-            return true;
-        } catch (NullPointerException e) {
+            map = (Map<?, ?>) mapObj;
+        } catch (ClassCastException e) {
             return false;
         }
+        return requiredCheck(map) && sizeOfCheck(map) && shapeCheck(map);
+    }
+
+    private boolean requiredCheck(Map<?, ?> map) {
+        if (this.isRequired) {
+            return map != null;
+        }
+        return true;
+    }
+
+    private boolean sizeOfCheck(Map<?, ?> map) {
+        if (this.exactSize != null) {
+            return map != null && map.size() == this.exactSize;
+        }
+        return true;
+    }
+
+    private boolean shapeCheck(Map<?, ?> map) {
+        if (this.appliedSchemas != null) {
+            return map != null && this.appliedSchemas.entrySet().stream()
+                    .allMatch(e -> e.getValue().isValid(map.get(e.getKey())));
+        }
+        return true;
     }
 }

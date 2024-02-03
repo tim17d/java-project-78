@@ -24,26 +24,33 @@ public class NumberSchema extends BaseSchema {
 
     @Override
     public boolean isValid(Object intObj) {
+        Integer value;
         try {
-            var value = (Integer) intObj;
-            if (this.isRequired) {
-                if (value == null) {
-                    return false;
-                }
-            }
-            if (this.isPositive) {
-                if (value != null && value <= 0) {
-                    return false;
-                }
-            }
-            if (this.minValue != null && this.maxValue != null) {
-                if (value < this.minValue || value > this.maxValue) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (NullPointerException e) {
+            value = (Integer) intObj;
+        } catch (ClassCastException e) {
             return false;
         }
+        return this.requiredCheck(value) && this.positiveCheck(value) && this.rangeCheck(value);
+    }
+
+    private boolean requiredCheck(Integer value) {
+        if (this.isRequired) {
+            return value != null;
+        }
+        return true;
+    }
+
+    private boolean positiveCheck(Integer value) {
+        if (this.isPositive) {
+            return value == null || value > 0;
+        }
+        return true;
+    }
+
+    private boolean rangeCheck(Integer value) {
+        if (this.minValue != null && this.maxValue != null) {
+            return value != null && value >= this.minValue && value <= this.maxValue;
+        }
+        return true;
     }
 }
