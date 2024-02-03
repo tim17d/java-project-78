@@ -15,7 +15,7 @@ public class NumberSchemaTest {
     @Test
     public void testEmptyValidationIsValid() {
         assertThat(numberSchema.isValid(null)).isTrue();
-//        assertThat(numberSchema.isValid("")).isFalse();
+        assertThat(numberSchema.isValid("")).isFalse();
     }
 
     @Test
