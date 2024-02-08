@@ -9,7 +9,7 @@ public abstract class BaseSchema<T> {
 
     public abstract BaseSchema<T> required();
 
-    public boolean isValid(T value) {
+    public final boolean isValid(T value) {
         return checks.stream()
                 .allMatch(p -> p.test(value));
     }

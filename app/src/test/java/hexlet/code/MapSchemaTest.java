@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapSchemaTest {
+public final class MapSchemaTest {
     private MapSchema mapSchema;
 
     @BeforeEach
