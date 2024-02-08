@@ -19,6 +19,11 @@ public class NumberSchemaTest {
     }
 
     @Test
+    public void testIsValid() {
+        assertThat(numberSchema.isValid(null)).isTrue();
+    }
+
+    @Test
     public void testRequiredIsValid() {
         numberSchema.required();
         assertThat(numberSchema.isValid(null)).isFalse();
@@ -27,8 +32,8 @@ public class NumberSchemaTest {
 
     @Test
     public void testPositiveIsValid() {
-        numberSchema.positive();
-        assertThat(numberSchema.isValid(null)).isTrue();
+        numberSchema.required().positive();
+        assertThat(numberSchema.isValid(null)).isFalse();
         assertThat(numberSchema.isValid(1526)).isTrue();
         assertThat(numberSchema.isValid(0)).isFalse();
         assertThat(numberSchema.isValid(-1526)).isFalse();
@@ -36,7 +41,7 @@ public class NumberSchemaTest {
 
     @Test
     public void testRangeIsValid() {
-        numberSchema.range(5, 10);
+        numberSchema.required().range(5, 10);
         assertThat(numberSchema.isValid(null)).isFalse();
         assertThat(numberSchema.isValid(7)).isTrue();
         assertThat(numberSchema.isValid(5)).isTrue();
@@ -49,5 +54,11 @@ public class NumberSchemaTest {
         numberSchema.required().positive().range(5, 10);
         assertThat(numberSchema.isValid(7)).isTrue();
         assertThat(numberSchema.isValid(-7)).isFalse();
+    }
+
+    @Test
+    public void testFullValidationNotRequiredIsValid() {
+        numberSchema.positive().range(5, 10);
+        assertThat(numberSchema.isValid(null)).isTrue();
     }
 }

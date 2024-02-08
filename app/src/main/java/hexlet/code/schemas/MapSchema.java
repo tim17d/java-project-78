@@ -1,51 +1,23 @@
 package hexlet.code.schemas;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class MapSchema extends BaseSchema<Map<?, ?>> {
-    private Integer exactSize;
-    private Map<String, BaseSchema<?>> appliedSchemas;
-
     @Override
     public MapSchema required() {
-        this.isRequired = true;
+        this.checks.add(Objects::nonNull);
         return this;
     }
 
     public MapSchema sizeof(int size) {
-        this.exactSize = size;
+        this.checks.add(map -> map == null || map.size() == size);
         return this;
     }
 
-    public MapSchema shape(Map<String, BaseSchema<?>> schemas) {
-        this.appliedSchemas = schemas;
+    public <T> MapSchema shape(Map<String, BaseSchema<T>> schemas) {
+        this.checks.add(map -> map == null || schemas.entrySet().stream()
+                .allMatch(e -> e.getValue().isValid((T) map.get(e.getKey()))));
         return this;
-    }
-
-    @Override
-    public boolean isValid(Map<?, ?> map) {
-        return requiredCheck(map) && sizeofCheck(map) && shapeCheck(map);
-    }
-
-    private boolean requiredCheck(Map<?, ?> map) {
-        if (this.isRequired) {
-            return map != null;
-        }
-        return true;
-    }
-
-    private boolean sizeofCheck(Map<?, ?> map) {
-        if (this.exactSize != null) {
-            return map != null && map.size() == this.exactSize;
-        }
-        return true;
-    }
-
-    private <T> boolean shapeCheck(Map<?, T> map) {
-        if (this.appliedSchemas != null) {
-            return map != null && this.appliedSchemas.entrySet().stream()
-                    .allMatch(e -> ((BaseSchema<T>) e.getValue()).isValid(map.get(e.getKey())));
-        }
-        return true;
     }
 }
